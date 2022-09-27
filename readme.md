@@ -25,9 +25,14 @@ The goals of the project are pretty simple. I just want to explain why TypeScrip
 
 You will need to install [NodeJS](https://nodejs.org/) as well as [git](https://git-scm.com/downloads) and an IDE in order to do that. Then execute those commands<br><br>
 
-  ```
+```
   git clone https://github.com/dalmatheo/DiscordTypeScript .
   npm i -y
-  ```<br><br>
-  And voilà, all the code should be copied into your folder and will be ready to start. To start the bot, you'll need to edit the token in the config.json file in src/assets.
+```
+<br><br>
+  And voilà, all the code should be copied into your folder and will be ready to start. To start the bot, you'll need to edit the token in the config.json file in src/assets. Here is the config file template : 
+
+```json
+  {"token": "token", "prefix": "!"}
+```
 </h2>
