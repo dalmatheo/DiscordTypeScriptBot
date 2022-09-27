@@ -1,3 +1,4 @@
 /node_modules
 push.txt
 src/assets/config.json
+dist/
