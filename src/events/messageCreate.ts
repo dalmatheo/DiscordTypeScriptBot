@@ -2,7 +2,7 @@ import {Client, Message} from "discord.js";
 import config from "../assets/config.json"
 
 //Exporting the module to make index.ts able to use the code. Also declaring client as a Client object, declaring Message as a message object to make the IDE able to do great code completion.
-module.exports = (client:Client, message:Message) => {
+module.exports = async (client:Client, message:Message) => {
     //If the message don't start with the prefix, do nothing. I put that before verifying if the author is a bot because there will be more message that don't start with "!" that message sends by bots.
     if (!message.content.startsWith(config.prefix)) return;
     //Check if the message author is a bot.
