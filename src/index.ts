@@ -21,7 +21,6 @@ for (const file of events) {
     const eventName = file.split(".")[0]
     //Getting the file.
     const event = require(__dirname + "/events/" + file)
-    console.log(eventName)
     //The same as : client.on(name of the event, set the file that execute the event.)
     client.on(eventName, event.bind(null, client))
 }
