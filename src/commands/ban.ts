@@ -9,11 +9,16 @@ exports.run = async (client:Client, message:Message, args:string[]) => {
     if (message.member.roles.cache.get(config.staffrole)) {
         if (args[0].startsWith("<@") && args[0].endsWith(">")) {
             const ptban = message.guild.members.cache.get(args[0].replace("<@", "").replace(">", ""))
-            const reason = message.content.replace(config.prefix + exports.name + " " + args[0] + " ", "")
-            await ptban.ban({reason: reason, deleteMessageDays: 1})
-            message.channel.send(ptban.displayName + " was banned for " + reason + ".")
             const logchannel = message.guild.channels.cache.get(config.logchannel) as TextChannel
-            await logchannel.send(ptban.displayName + " got banned by " + message.author.username + " for " + reason + ".")
+            if (ptban.roles.cache.get(config.staffrole)) {
+                message.channel.send("You can't ban " + ptban.displayName + " because he is staff.")
+                await logchannel.send(message.author.username + " tried to ban " + ptban + " but he is staff.")
+            } else {
+                const reason = message.content.replace(config.prefix + exports.name + " " + args[0] + " ", "")
+                await ptban.ban({reason: reason, deleteMessageDays: 1})
+                message.channel.send(ptban.displayName + " was banned for " + reason + ".")
+                await logchannel.send(ptban.displayName + " got banned by " + message.author.username + " for " + reason + ".")
+            }
         }
     } else {
         message.channel.send("You don't have the permission to ban someone.")
