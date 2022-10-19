@@ -1,8 +1,6 @@
-import {Client, IntentsBitField, Collection} from "discord.js";
+import {Client, IntentsBitField, Collection, TextChannel, GuildMember} from "discord.js";
 import * as fs from "fs";
 import config from "./assets/config.json"
-
-console.log("Bot is starting...");
 
 // Adding the Intents to make the bot able to use get all the information that he needs.
 const client = new Client({
@@ -36,11 +34,22 @@ for (const file of commands) {
   //The same as : client.on(name of the command, the file that execute the event.)
   client.commands.set(commandName, command);
 }
-
-//When the bot is on, display in the console "The bot is online.". You could also add + config.token to display the token of the bot.
-client.on("ready", () => {
-    console.log("The bot is online.")
-})
-
 //Turning on the bot.
-client.login(config.token)
+logIn()
+
+//The function to run the bot
+export async function logIn(channel?:TextChannel, user?:GuildMember) {
+    let reload = false
+    if (channel != undefined && user != undefined) {
+        reload = true
+        client.destroy()
+        console.clear()
+    }
+    await console.log("Bot is starting...");
+    client.login(config.token).then(() => {
+        console.log("The bot is online.")
+        if (reload) {
+            channel.send("The bot as restarted because <@" + user.id + "> asked it.")
+        }
+    })
+}

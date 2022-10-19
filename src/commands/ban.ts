@@ -8,9 +8,12 @@ exports.name =  "ban";
 exports.run = async (client:Client, message:Message, args:string[]) => {
     if (message.member.roles.cache.get(config.staffrole)) {
         if (args[0].startsWith("<@") && args[0].endsWith(">")) {
-            const ptban = message.guild.members.cache.get(args[0].replace("<@", "").replace(">", ""))
             const logchannel = message.guild.channels.cache.get(config.logchannel) as TextChannel
-            if (ptban.roles.cache.get(config.staffrole)) {
+            const ptban = message.guild.members.cache.get(args[0].replace("<@", "").replace(">", ""))
+            if (ptban.roles.highest.position > message.guild.members.resolve(client.user).roles.highest.position) {
+                await logchannel.send(message.author.username + " tried to ban " + ptban.displayName + " but can't because his roles are higher than mine.")
+                message.channel.send("You can't ban " + ptban.displayName + " because his roles are higher than mine.")
+            } else if(ptban.roles.cache.get(config.staffrole)) {
                 message.channel.send("You can't ban " + ptban.displayName + " because he is staff.")
                 await logchannel.send(message.author.username + " tried to ban " + ptban + " but he is staff.")
             } else {
