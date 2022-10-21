@@ -1,4 +1,4 @@
-import {Client, IntentsBitField, Collection, TextChannel, GuildMember} from "discord.js";
+import {Client, IntentsBitField, Collection} from "discord.js";
 import * as fs from "fs";
 import config from "./assets/config.json"
 
@@ -34,22 +34,5 @@ for (const file of commands) {
   //The same as : client.on(name of the command, the file that execute the event.)
   client.commands.set(commandName, command);
 }
-//Turning on the bot.
-logIn()
 
-//The function to run the bot
-export async function logIn(channel?:TextChannel, user?:GuildMember) {
-    let reload = false
-    if (channel != undefined && user != undefined) {
-        reload = true
-        client.destroy()
-        console.clear()
-    }
-    await console.log("Bot is starting...");
-    client.login(config.token).then(() => {
-        console.log("The bot is online.")
-        if (reload) {
-            channel.send("The bot as restarted because <@" + user.id + "> asked it.")
-        }
-    })
-}
+client.login(config.token).then(r => console.log("The bot is online !"))
