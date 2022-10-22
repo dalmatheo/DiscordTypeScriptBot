@@ -33,6 +33,6 @@ You will need to install [NodeJS](https://nodejs.org/) as well as [git](https://
   And voilà, all the code should be copied into your folder and will be ready to start. To start the bot, you'll need to edit the token in the config.json file in src/assets. Here is the config file template : 
 
 ```json
-  {"token": "token", "prefix": "!", "" : "1031203528330452992", "staffrole" : "1031203528330452992", "logchannel" :  "1030922685015937064"}
+  {"token": "token", "prefix": "!", "" : "1031203528330452992", "clientId": "id of the bot", "guildId": "id of the principal guild", "staffrole": "id of the staff role", "logchannel": "id of the log channel"}
 ```
 </h2>
