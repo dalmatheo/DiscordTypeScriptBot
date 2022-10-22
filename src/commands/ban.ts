@@ -1,30 +1,56 @@
-import {Client, Message, TextChannel} from "discord.js";
+import {
+    ChatInputCommandInteraction,
+    GuildMember,
+    SlashCommandBuilder,
+    TextChannel
+} from "discord.js";
 import config from "../assets/config.json"
 
-//Export the name of the command to make the index.ts able to use it
-exports.name =  "ban";
+module.exports = {
 
-//Exporting the code and say that client is a Client object, same for the message and the args.
-exports.run = async (client:Client, message:Message, args:string[]) => {
-    if (message.member.roles.cache.get(config.staffrole)) {
-        if (args[0].startsWith("<@") && args[0].endsWith(">")) {
-            const logchannel = message.guild.channels.cache.get(config.logchannel) as TextChannel
-            const ptban = message.guild.members.cache.get(message.mentions.users.first().id)
-            if (ptban.roles.highest.position > message.guild.members.resolve(client.user).roles.highest.position) {
-                await logchannel.send(message.author.username + " tried to ban " + ptban.displayName + " but can't because his roles are higher than mine.")
-                message.channel.send("You can't ban " + ptban.displayName + " because his roles are higher than mine.")
-            } else if(ptban.roles.cache.get(config.staffrole)) {
-                message.channel.send("You can't ban " + ptban.displayName + " because he is staff.")
-                await logchannel.send(message.author.username + " tried to ban " + ptban + " but he is staff.")
+    data: new SlashCommandBuilder()
+        .setName('ban')
+        .addMentionableOption(option =>
+            option.setName("user")
+                .setRequired(true)
+                .setDescription("User to ban from the discord.")
+        )
+        .addStringOption(option =>
+            option.setName("reason")
+                .setRequired(true)
+                .setDescription("The reason of the ban")
+        )
+        .addIntegerOption(option =>
+            option.setName("deletetime")
+                .setRequired(false)
+                .setDescription("Delete all message that was post between now and minus this time. This is in hour")
+        )
+        .setDescription('The ban command'),
+    execute: async function (interaction: ChatInputCommandInteraction) {
+        const author = interaction.member as GuildMember
+        if (author.roles.cache.get(config.staffrole)) {
+            const ptban = interaction.options.data[0].member as GuildMember
+            const logchannel = interaction.guild.channels.cache.get(config.logchannel) as TextChannel
+            if (ptban.roles.highest.position > interaction.guild.members.resolve(interaction.client.user).roles.highest.position) {
+                await logchannel.send(author.displayName + " tried to ban " + ptban.displayName + " but can't because his roles are higher than mine.")
+                await interaction.reply("You can't ban " + ptban.displayName + " because his roles are higher than mine.")
+            } else if (ptban.roles.cache.get(config.staffrole)) {
+                await interaction.reply("You can't ban " + ptban.displayName + " because he is staff.")
+                await logchannel.send(author.displayName + " tried to ban " + ptban + " but he is staff.")
             } else {
-                const reason = message.content.replace(config.prefix + exports.name + " " + args[0] + " ", "")
-                await ptban.ban({reason: reason, deleteMessageDays: 1})
-                message.channel.send(ptban.displayName + " was banned for " + reason + ".")
-                await logchannel.send(ptban.displayName + " got banned by " + message.author.username + " for " + reason + ".")
+                if (interaction.options.data[2].value != undefined) {
+                    const reason = interaction.options.data[1].value
+                    await ptban.ban({deleteMessageSeconds: 3600})
+                    await interaction.reply(ptban.displayName + " was banned for " + reason + ".")
+                    await logchannel.send(ptban.displayName + " got banned by " + author.displayName + " for " + reason + ".")
+                } else {
+                    const reasonofban = interaction.options.data[1].value
+                    const dltmsghr:number = Number(interaction.options.data[2].value) * 3600
+                    await ptban.ban({deleteMessageSeconds: dltmsghr, reason: reasonofban.toString()})
+                    await interaction.reply(ptban.displayName + " was banned for " + reasonofban + ".")
+                    await logchannel.send(ptban.displayName + " got banned by " + author.displayName + " for " + reasonofban + ".")
+                }
             }
         }
-    } else {
-        message.channel.send("You don't have the permission to ban someone.")
     }
-
 }
