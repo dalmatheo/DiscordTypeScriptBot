@@ -27,10 +27,10 @@ module.exports = {
         )
         .setDescription('The ban command'),
     execute: async function (interaction: ChatInputCommandInteraction) {
+        const logchannel = interaction.guild.channels.cache.get(config.logchannel) as TextChannel
+        const ptban = interaction.options.data[0].member as GuildMember
         const author = interaction.member as GuildMember
         if (author.roles.cache.get(config.staffrole)) {
-            const ptban = interaction.options.data[0].member as GuildMember
-            const logchannel = interaction.guild.channels.cache.get(config.logchannel) as TextChannel
             if (ptban.roles.highest.position > interaction.guild.members.resolve(interaction.client.user).roles.highest.position) {
                 await logchannel.send(author.displayName + " tried to ban " + ptban.displayName + " but can't because his roles are higher than mine.")
                 await interaction.reply("You can't ban " + ptban.displayName + " because his roles are higher than mine.")
@@ -51,6 +51,9 @@ module.exports = {
                     await logchannel.send(ptban.displayName + " got banned by " + author.displayName + " for " + reasonofban + ".")
                 }
             }
+        } else {
+            await interaction.reply("You don't have the permission to ban.")
+            await logchannel.send(author.displayName + " tried to ban " + ptban.displayName + " but can't because he don't have the staff role.")
         }
     }
 }

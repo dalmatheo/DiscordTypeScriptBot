@@ -23,9 +23,9 @@ module.exports = {
         .setDescription('The timeout command'),
     execute: async function (interaction: ChatInputCommandInteraction) {
         const author = interaction.member as GuildMember
+        const ptto = interaction.options.data[0].member as GuildMember
+        const logchannel = interaction.guild.channels.cache.get(config.logchannel) as TextChannel
         if (author.roles.cache.get(config.staffrole)) {
-            const ptto = interaction.options.data[0].member as GuildMember
-            const logchannel = interaction.guild.channels.cache.get(config.logchannel) as TextChannel
             if (ptto.roles.cache.get(config.staffrole)) {
                 await interaction.reply("You can't timeout " + ptto.displayName + " because he is staff.")
                 await logchannel.send(author.displayName + " tried to timeout " + ptto.displayName + " but he is staff.")
@@ -51,6 +51,9 @@ module.exports = {
                 await interaction.reply("You successfully timed out " + ptto.displayName +  " for " + interaction.options.data[1].value.toString() + ". The reason is : " + reason + ".")
                 await logchannel.send(author.displayName + " timed out " + ptto.displayName + " for " + interaction.options.data[1].value.toString() + ". The reason is : " + reason + ".")
             }
+        } else {
+            await interaction.reply("You don't have the permission to timeout.")
+            await logchannel.send(author.displayName + " tried to tiemout " + ptto.displayName + " but can't because he don't have the staff role.")
         }
     }
 }

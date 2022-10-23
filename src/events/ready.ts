@@ -1,7 +1,10 @@
-import { Client} from "discord.js";
+import {Client, TextChannel} from "discord.js";
+import config from "../assets/config.json"
 
 
 module.exports = async (client:Client) => {
+    const logchannel = client.guilds.cache.get(config.guildId).channels.cache.get(config.logchannel) as TextChannel
+    await logchannel.send("The bot is on !")
     client.user.setPresence({
         activities: [{
             name: "your mother",
